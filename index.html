@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розклад УП-211 | Інтерактивний</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .week-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .week-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .week-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #7f8c8d;
+        }
+
+        .week-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .week-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .day-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .day-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-image: linear-gradient(45deg, #667eea, #764ba2) 1;
+        }
+
+        .class-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .class-item:not(.no-class):hover {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            transform: translateX(5px);
+        }
+
+        .class-item.lecture {
+            border-left-color: #3498db;
+            background: linear-gradient(135deg, #3498db10, #3498db05);
+        }
+
+        .class-item.lab {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c10, #e74c3c05);
+        }
+
+        .class-item.practice {
+            border-left-color: #f39c12;
+            background: linear-gradient(135deg, #f39c1210, #f39c1205);
+        }
+
+        .class-item.no-class {
+            border-left-color: #bdc3c7;
+            background: linear-gradient(135deg, #bdc3c710, #bdc3c705);
+            opacity: 0.6;
+        }
+
+        .class-time {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .class-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .type-lecture {
+            background: #3498db;
+            color: white;
+        }
+
+        .type-lab {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .type-practice {
+            background: #f39c12;
+            color: white;
+        }
+
+        .type-none {
+            background: #bdc3c7;
+            color: white;
+        }
+
+        .class-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .class-teacher {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .class-teacher:hover {
+            color: #3498db;
+            text-decoration: underline;
+        }
+
+        .class-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .class-link {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .class-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+        }
+
+        .class-link.google-class {
+            background: linear-gradient(45deg, #4285f4, #34a853);
+        }
+
+        .class-link.meet-link {
+            background: linear-gradient(45deg, #ea4335, #fbbc05);
+        }
+
+        .current-time {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            color: #2c3e50;
+            z-index: 100;
+            font-size: 0.85rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .week-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .odd-week {
+            background: #e8f5e8;
+            color: #27ae60;
+        }
+
+        .even-week {
+            background: #e8f4fd;
+            color: #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+            
+            .current-time {
+                position: static;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .week-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .day-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .day-card:nth-child(1) { animation-delay: 0.1s; }
+        .day-card:nth-child(2) { animation-delay: 0.2s; }
+        .day-card:nth-child(3) { animation-delay: 0.3s; }
+        .day-card:nth-child(4) { animation-delay: 0.4s; }
+        .day-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="current-time" id="currentTime"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📅 Розклад УП-211</h1>
+            <div class="week-controls">
+                <div class="week-toggle">
+                    <button class="week-btn active" id="autoBtn" onclick="setWeek('auto')">🤖 Авто</button>
+                    <button class="week-btn" id="oddBtn" onclick="setWeek('odd')">☝️ Непарний</button>
+                    <button class="week-btn" id="evenBtn" onclick="setWeek('even')">✌️ Парний</button>
+                </div>
+                <div class="week-info" id="weekInfo">
+                    Тиждень <span id="weekNumber">4</span> • <span id="weekType">Парний</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="schedule-grid" id="scheduleGrid">
+            <!-- Розклад буде згенерований JavaScript -->
+        </div>
+
+        <div class="footer">
+            <p>✨ Розклад для групи УП-211 • 1 семестр 2025/2026 ✨</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">Останнє оновлення: вересень 2025</p>
+        </div>
+    </div>
+
+    <script>
+        // Контакти викладачів
+        const teacherContacts = {
+            "викл. Ходовиченко": "https://t.me/MykolaHdv",
+            "Тесленко Павло Олександрович": "https://t.me/pavlo_teslenko",
+            "викл. Літвінов": "mailto:litvinov.v.f@op.edu.ua",
+            "викл. Івченко І.Ю.": "https://t.me/ivchira",
+            "викл. Цапенко Л. Ю.": "mailto:l.e.tsapenko@op.edu.ua",
+            "викл. Ковтун В.В.": "mailto:kovtun.v.v@op.edu.ua",
+            "доц. Журан О.А.": "https://t.me/elena_zhuran",
+            "ств. Узун": "https://t.me/IlliaUzun",
+            "доц. Чередниченко В.А.": "mailto:v.a.cherednychenko@op.edu.ua"
+        };
+
+        // Дані розкладу
+        const scheduleData = {
+            monday: [
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lecture",
+                    name: "Гнучкі технології розробки ІТ-проєктів",
+                    teacher: "викл. Ходовиченко",
+                    link: "https://bit.ly/hodovychenko_zoom",
+                    weeks: "both"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Методологія УП в ІТ",
+                    teacher: "Тесленко Павло Олександрович",
+                    link: "https://us02web.zoom.us/j/84048195235?pwd=YWh3Q0dsNWx6WWtLZXlNNjR5VUN2UT09",
+                    weeks: "both"
+                }
+            ],
+            tuesday: [
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lab",
+                    name: "Хмарні технології",
+                    teacher: "викл. Літвінов",
+                    link: "",
+                    weeks: "odd"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Хмарні технології",
+                    teacher: "викл. Літвінов",
+                    link: "",
+                    weeks: "even"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "lecture",
+                    name: "Управління ризиками ІТ проєктів",
+                    teacher: "викл. Івченко І.Ю.",
+                    link: "https://meet.google.com/wgh-uqyp-pyd",
+                    googleClass: "https://classroom.google.com/c/NzYwMjEyMjAxNTM0?cjc=gayjlz67",
+                    weeks: "both"
+                },
+                {
+                    time: "4. 13:30-15:05",
+                    type: "lab",
+                    name: "Гнучкі технології розробки ІТ-проєктів",
+                    teacher: "викл. Ходовиченко",
+                    link: "https://bit.ly/hodovychenko_zoom",
+                    weeks: "odd"
+                },
+                {
+                    time: "4. 13:30-15:05",
+                    type: "lab",
+                    name: "Управління ризиками ІТ проєктів",
+                    teacher: "викл. Івченко І.Ю.",
+                    link: "https://meet.google.com/wgh-uqyp-pyd",
+                    googleClass: "https://classroom.google.com/c/NzYwMjEyMjAxNTM0?cjc=gayjlz67",
+                    weeks: "even"
+                }
+            ],
+            wednesday: [
+                {
+                    time: "1. 8:00-9:35",
+                    type: "practice",
+                    name: "Іноземна мова за проф. спрямуванням",
+                    teacher: "викл. Цапенко Л. Ю.",
+                    link: "https://meet.google.com/hok-khmm-hhu",
+                    weeks: "both"
+                }
+            ],
+            thursday: [
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lab",
+                    name: "Інжиніринг даних",
+                    teacher: "викл. Ковтун В.В.",
+                    link: "https://us02web.zoom.us/j/88696773669?pwd=1x8TMJN4rdn7xRC8G0a2LKfPc5Jw9P.1",
+                    weeks: "odd"
+                },
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lecture",
+                    name: "Інжиніринг даних",
+                    teacher: "викл. Ковтун В.В.",
+                    link: "https://us02web.zoom.us/j/88696773669?pwd=1x8TMJN4rdn7xRC8G0a2LKfPc5Jw9P.1",
+                    weeks: "even"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Методологія УП в ІТ",
+                    teacher: "доц. Журан О.А.",
+                    link: "https://meet.google.com/wfr-eauz-ewx",
+                    weeks: "both"
+                }
+            ],
+            friday: [
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lab",
+                    name: "Високорівневе програмування",
+                    teacher: "ств. Узун",
+                    link: "https://meet.google.com/hmt-fpdf-qci",
+                    weeks: "odd"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Високорівневе програмування",
+                    teacher: "ств. Узун",
+                    link: "https://meet.google.com/hmt-fpdf-qci",
+                    weeks: "even"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "none",
+                    name: "—",
+                    teacher: "",
+                    link: "",
+                    weeks: "odd"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "lecture",
+                    name: "Наукові дослідження та винах. діяльність в ІТ галузі",
+                    teacher: "доц. Чередниченко В.А.",
+                    link: "https://meet.google.com/rrm-gffj-mko",
+                    weeks: "even"
+                },
+                {
+                    time: "4. 13:30-15:05",
+                    type: "none",
+                    name: "—",
+                    teacher: "",
+                    link: "",
+                    weeks: "odd"
+                },
+                {
+                    time: "4. 13:30-15:05",
+                    type: "lab",
+                    name: "Наукові дослідження та винах. діяльність в ІТ",
+                    teacher: "доц. Чередниченко В.А.",
+                    link: "https://meet.google.com/rrm-gffj-mko",
+                    weeks: "even"
+                }
+            ]
+        };
+
+        // Поточний тиждень (починається з 1-го як парний)
+        let currentWeek = 1;
+        let currentWeekType = 'even';
+        let isAutoMode = true;
+
+        // Функція для відкриття контактів викладачів
+        function openTeacherContact(teacher) {
+            const contact = teacherContacts[teacher];
+            if (contact) {
+                window.open(contact, '_blank');
+            }
+        }
+
+        // Автоматичне визначення тижня
+        function calculateCurrentWeek() {
+            // Знаходимо понеділок тижня, де є 1 вересня 2025
+            const sept1 = new Date('2025-09-01');
+            const sept1Day = sept1.getDay(); // 0 = неділя, 1 = понеділок, і т.д.
+            
+            // Знаходимо понеділок того тижня (якщо 1 вересня не понеділок)
+            const firstMondayOffset = sept1Day === 0 ? 1 : (8 - sept1Day) % 7;
+            const firstMonday = new Date(sept1);
+            firstMonday.setDate(sept1.getDate() - sept1Day + 1);
+            
+            // Поточна дата
+            const now = new Date();
+            const currentMonday = new Date(now);
+            const currentDay = now.getDay();
+            currentMonday.setDate(now.getDate() - currentDay + 1);
+            
+            // Різниця в тижнях від першого понеділка
+            const timeDiff = currentMonday - firstMonday;
+            const weeksPassed = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000));
+            
+            // Перший тиждень - парний (1-й), далі по порядку
+            currentWeek = 1 + weeksPassed;
+            // Перший тиждень завжди парний, тому парні: 1, 3, 5..., непарні: 2, 4, 6...
+            currentWeekType = currentWeek % 2 === 1 ? 'even' : 'odd';
+            
+            console.log(`Перший понеділок: ${firstMonday.toDateString()}`);
+            console.log(`Поточний понеділок: ${currentMonday.toDateString()}`);
+            console.log(`Тижнів пройшло: ${weeksPassed}`);
+            console.log(`Поточний тиждень: ${currentWeek} (${currentWeekType})`);
+        }
+
+        // Встановлення типу тижня
+        function setWeek(type) {
+            if (type === 'auto') {
+                isAutoMode = true;
+                calculateCurrentWeek();
+                document.getElementById('autoBtn').classList.add('active');
+                document.getElementById('oddBtn').classList.remove('active');
+                document.getElementById('evenBtn').classList.remove('active');
+            } else {
+                isAutoMode = false;
+                currentWeekType = type;
+                document.getElementById('autoBtn').classList.remove('active');
+                document.getElementById('oddBtn').classList.toggle('active', type === 'odd');
+                document.getElementById('evenBtn').classList.toggle('active', type === 'even');
+            }
+            
+            updateWeekInfo();
+            renderSchedule();
+        }
+
+        function updateWeekInfo() {
+            document.getElementById('weekNumber').textContent = currentWeek;
+            document.getElementById('weekType').textContent = currentWeekType === 'odd' ? 'Непарний' : 'Парний';
+            
+            if (isAutoMode) {
+                document.getElementById('weekType').innerHTML = 
+                    `${currentWeekType === 'odd' ? 'Парний' : 'Непарний'} <span style="color: #27ae60; font-size: 0.8em;">(авто)</span>`;
+            }
+        }
+
+        // Генерація розкладу
+        function renderSchedule() {
+            const days = [
+                { key: 'monday', name: '📕 Понеділок', emoji: '🌟' },
+                { key: 'tuesday', name: '📗 Вівторок', emoji: '🔥' },
+                { key: 'wednesday', name: '📘 Середа', emoji: '⚡' },
+                { key: 'thursday', name: '📙 Четвер', emoji: '💻' },
+                { key: 'friday', name: '📒 П\'ятниця', emoji: '🐹' },
+                { key: 'saturday', name: '📓 Субота', emoji: '🔄' }
+            ];
+
+            const scheduleGrid = document.getElementById('scheduleGrid');
+            scheduleGrid.innerHTML = '';
+
+            days.forEach((day, index) => {
+                const dayCard = document.createElement('div');
+                dayCard.className = 'day-card';
+                
+                let dayHTML = `<h2 class="day-title">${day.emoji} ${day.name.split(' ')[1]}</h2>`;
+                
+                if (day.key === 'saturday') {
+                    // Логіка відпрацювання для суботи
+                    // 4-й тиждень = понеділок, 5-й = вівторок, 6-й = середа, 7-й = четвер, 8-й = п'ятниця
+                    const workdayIndex = (currentWeek - 4) % 5; // Починаємо з 4-го тижня
+                    const workdayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+                    const workdayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця'];
+                    const workdayKey = workdayKeys[workdayIndex];
+                    const workdayName = workdayNames[workdayIndex];
+                    
+                    dayHTML += `<div style="text-align: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(135deg, #f39c1210, #f39c1205); border-radius: 10px; border-left: 4px solid #f39c12;">
+                        <strong>Відпрацювання: ${workdayName} (парний тиждень)</strong>
+                    </div>`;
+                    
+                    // Беремо розклад відповідного дня з парного тижня
+                    const dayClasses = scheduleData[workdayKey] || [];
+                    const relevantClasses = dayClasses.filter(cls => 
+                        cls.weeks === 'both' || cls.weeks === 'even' // Завжди парний для відпрацювання
+                    );
+
+                    // Додаємо всі слоти з 1 по 4
+                    for (let slot = 1; slot <= 4; slot++) {
+                        const slotClass = relevantClasses.find(cls => 
+                            cls.time.startsWith(`${slot}.`)
+                        );
+
+                        if (slotClass) {
+                            const typeClass = slotClass.type === 'none' ? 'no-class' : slotClass.type;
+                            const typeLabel = slotClass.type === 'lab' ? 'Лабораторна' :
+                                            slotClass.type === 'lecture' ? 'Лекція' :
+                                            slotClass.type === 'practice' ? 'Практика' :
+                                            'Вільно';
+                            
+                            dayHTML += `
+                                <div class="class-item ${typeClass}">
+                                    <div class="class-time">${slotClass.time}</div>
+                                    <span class="class-type type-${slotClass.type === 'none' ? 'none' : slotClass.type}">${typeLabel}</span>
+                                    <span class="week-indicator even-week">🔄 Відпр.</span>
+                                    <div class="class-name">${slotClass.name}</div>
+                                    ${slotClass.teacher ? `<div class="class-teacher" onclick="openTeacherContact('${slotClass.teacher}')" title="Написати викладачу">${slotClass.teacher}</div>` : ''}
+                                    <div class="class-links">
+                                        ${slotClass.link ? `<a href="${slotClass.link}" class="class-link meet-link" target="_blank">🎥 Посилання</a>` : ''}
+                                        ${slotClass.googleClass ? `<a href="${slotClass.googleClass}" class="class-link google-class" target="_blank">📚 Classroom</a>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            // Порожній слот
+                            const timeSlots = ['8:00-9:35', '9:50-11:25', '11:40-13:15', '13:30-15:05'];
+                            dayHTML += `
+                                <div class="class-item no-class">
+                                    <div class="class-time">${slot}. ${timeSlots[slot-1]}</div>
+                                    <span class="class-type type-none">Вільно</span>
+                                    <div class="class-name">—</div>
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    // Звичайна логіка для будніх днів
+                    const dayClasses = scheduleData[day.key] || [];
+                    const relevantClasses = dayClasses.filter(cls => 
+                        cls.weeks === 'both' || cls.weeks === currentWeekType
+                    );
+
+                    // Додаємо всі слоти з 1 по 4
+                    for (let slot = 1; slot <= 4; slot++) {
+                        const slotClass = relevantClasses.find(cls => 
+                            cls.time.startsWith(`${slot}.`)
+                        );
+
+                        if (slotClass) {
+                            const typeClass = slotClass.type === 'none' ? 'no-class' : slotClass.type;
+                            const typeLabel = slotClass.type === 'lab' ? 'Лабораторна' :
+                                            slotClass.type === 'lecture' ? 'Лекція' :
+                                            slotClass.type === 'practice' ? 'Практика' :
+                                            'Вільно';
+                            
+                            dayHTML += `
+                                <div class="class-item ${typeClass}">
+                                    <div class="class-time">${slotClass.time}</div>
+                                    <span class="class-type type-${slotClass.type === 'none' ? 'none' : slotClass.type}">${typeLabel}</span>
+                                    ${slotClass.weeks !== 'both' ? `<span class="week-indicator ${slotClass.weeks === 'odd' ? 'odd' : 'even'}-week">${slotClass.weeks === 'odd' ? '☝️' : '✌️'}</span>` : ''}
+                                    <div class="class-name">${slotClass.name}</div>
+                                    ${slotClass.teacher ? `<div class="class-teacher" onclick="openTeacherContact('${slotClass.teacher}')" title="Написати викладачу">${slotClass.teacher}</div>` : ''}
+                                    <div class="class-links">
+                                        ${slotClass.link ? `<a href="${slotClass.link}" class="class-link meet-link" target="_blank">🎥 Посилання</a>` : ''}
+                                        ${slotClass.googleClass ? `<a href="${slotClass.googleClass}" class="class-link google-class" target="_blank">📚 Classroom</a>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            // Порожній слот
+                            const timeSlots = ['8:00-9:35', '9:50-11:25', '11:40-13:15', '13:30-15:05'];
+                            dayHTML += `
+                                <div class="class-item no-class">
+                                    <div class="class-time">${slot}. ${timeSlots[slot-1]}</div>
+                                    <span class="class-type type-none">Вільно</span>
+                                    <div class="class-name">—</div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+
+                dayCard.innerHTML = dayHTML;
+                scheduleGrid.appendChild(dayCard);
+            });
+        }
+
+        // Оновлення часу та тижня
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Europe/Kiev'
+            };
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleDateString('uk-UA', options);
+            
+            // Оновлюємо тиждень тільки в авто режимі
+            if (isAutoMode) {
+                const oldWeek = currentWeek;
+                const oldWeekType = currentWeekType;
+                calculateCurrentWeek();
+                
+                if (oldWeek !== currentWeek || oldWeekType !== currentWeekType) {
+                    updateWeekInfo();
+                    renderSchedule();
+                }
+            }
+        }
+
+        // Підсвічування поточного дня
+        function highlightCurrentDay() {
+            const today = new Date().getDay();
+            const dayCards = document.querySelectorAll('.day-card');
+            
+            // Понеділок = 1, Вівторок = 2, ..., Субота = 6
+            if (today >= 1 && today <= 6) {
+                const cardIndex = today === 6 ? 5 : today - 1; // Субота останньа карточка
+                setTimeout(() => {
+                    dayCards[cardIndex].style.border = '3px solid #667eea';
+                    dayCards[cardIndex].style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.3)';
+                }, 500);
+            }
+        }
+
+        // Ініціалізація
+        function init() {
+            calculateCurrentWeek();
+            setWeek('auto'); // Починаємо в авто режимі
+            updateTime();
+            setInterval(updateTime, 60000); // Перевіряємо кожну хвилину
+            highlightCurrentDay();
+        }
+
+        // Запуск
+        init();
+    </script>
+</body>
+</html>
