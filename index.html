@@ -366,7 +366,7 @@
         <div class="footer">
             <p>✨ Розклад для групи УП-211 • 1 семестр 2025/2026 ✨</p>
             <p style="margin-top: 10px; font-size: 0.8rem;">Останнє оновлення: листопад 2025</p>
-        </div>
+ </div>
     </div>
 
     <script>
@@ -473,6 +473,7 @@
                 let dayHTML = `<h2 class="day-title">${day.emoji} ${day.name.split(' ')[1]}</h2>`;
                 
                 if (day.key === 'saturday') {
+
                     const makeupWeekType = currentWeekType === 'even' ? 'odd' : 'even';
                     const workdayIndex = (currentWeek - 4) % 5;
                     const workdayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -480,12 +481,15 @@
                     dayHTML += `<div style="text-align: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(135deg, #f39c1210, #f39c1205); border-radius: 10px; border-left: 4px solid #f39c12;"><strong>Відпрацювання: ${workdayNames[workdayIndex]} (${makeupWeekType === 'odd' ? 'непарний' : 'парний'} тиждень)</strong></div>`;
                     const dayClasses = scheduleData[workdayKeys[workdayIndex]] || [];
                     const relevantClasses = dayClasses.filter(cls => cls.weeks === 'both' || cls.weeks === makeupWeekType);
+
                     for (let slot = 1; slot <= 4; slot++) {
                         const slotClass = relevantClasses.find(cls => cls.time.startsWith(`${slot}.`));
                         if (slotClass) {
                             const typeClass = slotClass.type === 'none' ? 'no-class' : slotClass.type;
                             const typeLabel = slotClass.type === 'lab' ? 'Лабораторна' : slotClass.type === 'lecture' ? 'Лекція' : slotClass.type === 'practice' ? 'Практика' : 'Вільно';
+
                             dayHTML += `<div class="class-item ${typeClass}"><div class="class-time">${slotClass.time}</div><span class="class-type type-${slotClass.type === 'none' ? 'none' : slotClass.type}">${typeLabel}</span><span class="week-indicator ${makeupWeekType}-week">🔄 Відпр. ${makeupWeekType === 'odd' ? '☝️' : '✌️'}</span><div class="class-name">${slotClass.name}</div>${slotClass.teacher ? `<div class="class-teacher" onclick="openTeacherContact('${slotClass.teacher}')" title="Написати викладачу">${slotClass.teacher}</div>` : ''}<div class="class-links">${slotClass.link ? `<a href="${slotClass.link}" class="class-link meet-link" target="_blank">📹 Посилання</a>` : ''}${slotClass.googleClass ? `<a href="${slotClass.googleClass}" class="class-link google-class" target="_blank">📚 Classroom</a>` : ''}</div></div>`;
+
                         } else {
                             const timeSlots = ['8:00-9:35', '9:50-11:25', '11:40-13:15', '13:30-15:05'];
                             dayHTML += `<div class="class-item no-class"><div class="class-time">${slot}. ${timeSlots[slot-1]}</div><span class="class-type type-none">Вільно</span><div class="class-name">—</div></div>`;
@@ -547,4 +551,5 @@
         init();
     </script>
 </body>
+
 </html>
