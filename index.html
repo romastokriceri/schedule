@@ -427,7 +427,7 @@
             currentMonday.setDate(now.getDate() - currentDay + 1);
             const timeDiff = currentMonday - firstMonday, weeksPassed = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000));
             currentWeek = 1 + weeksPassed;
-            currentWeekType = currentWeek % 2 === 1 ? 'even' : 'odd';
+            currentWeekType = currentWeek % 2 === 1 ? 'odd' : 'even';
         }
 
         function setWeek(type) {
@@ -474,7 +474,7 @@
                 
                 if (day.key === 'saturday') {
 
-                    const makeupWeekType = currentWeekType === 'even' ? 'odd' : 'even';
+                    const currentWeekType = currentWeek % 2 === 1 ? 'odd' : 'even';
                     const workdayIndex = (currentWeek - 4) % 5;
                     const workdayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
                     const workdayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця'];
