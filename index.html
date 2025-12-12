@@ -1,455 +1,577 @@
-import React, { useState } from 'react';
-import { Check, X, RefreshCw } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Writing Practice - Variant 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-const EnglishWorksheet = () => {
-  const [answers, setAnswers] = useState({
-    // Exercise 1
-    word1: ['', ''],
-    word2: ['', ''],
-    word3: ['', ''],
-    word4: ['', ''],
-    word5: ['', ''],
-    word6: ['', ''],
-    word7: ['', ''],
-    word8: ['', ''],
-    word9: ['', ''],
-    // Exercise 2
-    sunday: '',
-    monday: '',
-    tuesday: '',
-    wednesday: '',
-    // Exercise 3
-    note1: '',
-    note2: '',
-    note3: '',
-    note4: '',
-    note5: '',
-    // Exercise 4
-    pic1: '',
-    pic2: '',
-    pic3: ''
-  });
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
 
-  const [showResults, setShowResults] = useState(false);
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-  const correctAnswers = {
-    word1: ['e', 'a'],
-    word2: ['i', 'r'],
-    word3: ['h', 'r'],
-    word4: ['a', 's'],
-    word5: ['r', 'e'],
-    word6: ['t', 'i'],
-    word7: ['c', 'k'],
-    word8: ['g', 'h'],
-    word9: ['u', 'e']
-  };
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #2196f3;
+        }
 
-  const handleInputChange = (field, value, index = null) => {
-    if (index !== null) {
-      const newArray = [...answers[field]];
-      newArray[index] = value.toLowerCase();
-      setAnswers({ ...answers, [field]: newArray });
-    } else {
-      setAnswers({ ...answers, [field]: value });
-    }
-  };
+        h1 {
+            color: #2196f3;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
 
-  const checkAnswer = (field, index = null) => {
-    if (!showResults) return null;
-    
-    if (index !== null) {
-      return answers[field][index] === correctAnswers[field][index];
-    }
-    return null;
-  };
+        .variant {
+            color: #666;
+            font-size: 16px;
+        }
 
-  const reset = () => {
-    setAnswers({
-      word1: ['', ''],
-      word2: ['', ''],
-      word3: ['', ''],
-      word4: ['', ''],
-      word5: ['', ''],
-      word6: ['', ''],
-      word7: ['', ''],
-      word8: ['', ''],
-      word9: ['', ''],
-      sunday: '',
-      monday: '',
-      tuesday: '',
-      wednesday: '',
-      note1: '',
-      note2: '',
-      note3: '',
-      note4: '',
-      note5: '',
-      pic1: '',
-      pic2: '',
-      pic3: ''
-    });
-    setShowResults(false);
-  };
+        .reset-btn {
+            background: #757575;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
 
-  const InputBox = ({ field, index, placeholder = '' }) => {
-    const isCorrect = checkAnswer(field, index);
-    return (
-      <input
-        type="text"
-        maxLength={1}
-        value={index !== null ? answers[field][index] : answers[field]}
-        onChange={(e) => handleInputChange(field, e.target.value, index)}
-        className={`w-8 h-8 text-center border-2 rounded mx-0.5 text-lg font-semibold
-          ${showResults 
-            ? isCorrect === true 
-              ? 'border-green-500 bg-green-50' 
-              : isCorrect === false 
-                ? 'border-red-500 bg-red-50'
-                : 'border-gray-300'
-            : 'border-blue-400 focus:border-blue-600 focus:outline-none'
-          }`}
-        placeholder={placeholder}
-      />
-    );
-  };
+        .reset-btn:hover {
+            background: #616161;
+        }
 
-  return (
-    <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-lg">
-      <div className="bg-white rounded-lg p-6 mb-4">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-blue-600">English Writing Practice</h1>
-            <p className="text-gray-600">Variant 1</p>
-          </div>
-          <button
-            onClick={reset}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
-          >
-            <RefreshCw size={18} />
-            Reset
-          </button>
+        .exercise {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .exercise-1 { background: #e3f2fd; }
+        .exercise-2 { background: #e8f5e9; }
+        .exercise-3 { background: #f3e5f5; }
+        .exercise-4 { background: #fff3e0; }
+
+        .exercise-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .ex1-num { background: #2196f3; }
+        .ex2-num { background: #4caf50; }
+        .ex3-num { background: #9c27b0; }
+        .ex4-num { background: #ff9800; }
+
+        .words-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .word-item {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .letter-input {
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            border: 2px solid #2196f3;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 2px;
+            text-transform: lowercase;
+        }
+
+        .letter-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .letter-input.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .letter-input.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .table-box {
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #388e3c;
+        }
+
+        .sentence-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .note-box {
+            background: white;
+            border: 2px solid #9c27b0;
+            border-radius: 8px;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .note-input {
+            border: none;
+            border-bottom: 2px solid #9c27b0;
+            padding: 2px 8px;
+            font-size: 16px;
+            width: 120px;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-bottom-color: #7b1fa2;
+        }
+
+        .word-table {
+            background: white;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .word-column p {
+            padding: 5px;
+        }
+
+        .word-column p:first-child {
+            font-weight: bold;
+            color: #ff9800;
+        }
+
+        .picture-container {
+            margin-bottom: 20px;
+        }
+
+        .picture-container img {
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .answer-section {
+            margin-top: 20px;
+        }
+
+        .answer-item {
+            margin-bottom: 15px;
+        }
+
+        .answer-item p {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .check-btn {
+            display: block;
+            margin: 30px auto 0;
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        .check-btn:hover {
+            background: #1976d2;
+        }
+
+        @media (max-width: 768px) {
+            .words-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .word-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>English Writing Practice</h1>
+                <p class="variant">Variant 1</p>
+            </div>
+            <button class="reset-btn" onclick="resetAll()">
+                ↻ Reset
+            </button>
         </div>
 
-        {/* Exercise 1 */}
-        <div className="mb-8 p-4 bg-blue-50 rounded-lg">
-          <h2 className="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
-            <span className="bg-blue-600 text-white w-8 h-8 rounded flex items-center justify-center">1</span>
-            Write the missing letters
-          </h2>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">1) New Y</span>
-                <InputBox field="word1" index={0} />
-                <InputBox field="word1" index={1} />
-                <span className="ml-1">r</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">2) b</span>
-                <InputBox field="word2" index={0} />
-                <InputBox field="word2" index={1} />
-                <span className="ml-1">thday</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">3) C</span>
-                <InputBox field="word3" index={0} />
-                <InputBox field="word3" index={1} />
-                <span className="ml-1">istmas</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">4) E</span>
-                <InputBox field="word4" index={0} />
-                <InputBox field="word4" index={1} />
-                <span className="ml-1">ter</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">5) fi</span>
-                <InputBox field="word5" index={0} />
-                <InputBox field="word5" index={1} />
-                <span className="ml-1">place</span>
-              </div>
+        <!-- Exercise 1 -->
+        <div class="exercise exercise-1">
+            <div class="exercise-title">
+                <span class="exercise-number ex1-num">1</span>
+                <span>Write the missing letters</span>
+            </div>
+            <div class="words-grid">
+                <div>
+                    <div class="word-item">
+                        <span>1) New Y</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="e" data-word="1" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="a" data-word="1" data-pos="1">
+                        <span>r</span>
+                    </div>
+                    <div class="word-item">
+                        <span>2) b</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="i" data-word="2" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="r" data-word="2" data-pos="1">
+                        <span>thday</span>
+                    </div>
+                    <div class="word-item">
+                        <span>3) C</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="h" data-word="3" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="r" data-word="3" data-pos="1">
+                        <span>istmas</span>
+                    </div>
+                    <div class="word-item">
+                        <span>4) E</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="a" data-word="4" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="s" data-word="4" data-pos="1">
+                        <span>ter</span>
+                    </div>
+                    <div class="word-item">
+                        <span>5) fi</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="r" data-word="5" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="e" data-word="5" data-pos="1">
+                        <span>place</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="word-item">
+                        <span>6) tradi</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="t" data-word="6" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="i" data-word="6" data-pos="1">
+                        <span>on</span>
+                    </div>
+                    <div class="word-item">
+                        <span>7) sto</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="c" data-word="7" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="k" data-word="7" data-pos="1">
+                        <span>ing</span>
+                    </div>
+                    <div class="word-item">
+                        <span>8) ni</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="g" data-word="8" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="h" data-word="8" data-pos="1">
+                        <span>t</span>
+                    </div>
+                    <div class="word-item">
+                        <span>9) g</span>
+                        <input type="text" maxlength="1" class="letter-input" data-answer="u" data-word="9" data-pos="0">
+                        <input type="text" maxlength="1" class="letter-input" data-answer="e" data-word="9" data-pos="1">
+                        <span>sts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise 2 -->
+        <div class="exercise exercise-2">
+            <div class="exercise-title">
+                <span class="exercise-number ex2-num">2</span>
+                <span>Lucy's daily activities - Write about you</span>
             </div>
             
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">6) tradi</span>
-                <InputBox field="word6" index={0} />
-                <InputBox field="word6" index={1} />
-                <span className="ml-1">on</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">7) sto</span>
-                <InputBox field="word7" index={0} />
-                <InputBox field="word7" index={1} />
-                <span className="ml-1">ing</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">8) ni</span>
-                <InputBox field="word8" index={0} />
-                <InputBox field="word8" index={1} />
-                <span className="ml-1">t</span>
-              </div>
-              
-              <div className="flex items-center">
-                <span className="mr-2 font-semibold">9) g</span>
-                <InputBox field="word9" index={0} />
-                <InputBox field="word9" index={1} />
-                <span className="ml-1">sts</span>
-              </div>
+            <div class="table-box">
+                <table>
+                    <tr>
+                        <td>Sunday</td>
+                        <td>walk in the park</td>
+                    </tr>
+                    <tr>
+                        <td>Monday</td>
+                        <td>do yoga</td>
+                    </tr>
+                    <tr>
+                        <td>Tuesday</td>
+                        <td>read English books</td>
+                    </tr>
+                    <tr>
+                        <td>Wednesday</td>
+                        <td>go swimming pool</td>
+                    </tr>
+                </table>
             </div>
-          </div>
+
+            <div>
+                <p style="margin-bottom: 10px;">1) On Sundays Lucy <strong>walks in the park</strong>.</p>
+                <div class="sentence-line">
+                    <span>I usually</span>
+                    <input type="text" class="text-input" placeholder="write your Sunday activity" style="flex: 1;">
+                    <span>on Sundays.</span>
+                </div>
+
+                <p style="margin: 20px 0 10px 0;">2) On Mondays</p>
+                <input type="text" class="text-input" placeholder="write about Lucy's Monday">
+                <div class="sentence-line" style="margin-top: 10px;">
+                    <span>I</span>
+                    <input type="text" class="text-input" placeholder="write your Monday activity" style="flex: 1;">
+                </div>
+
+                <p style="margin: 20px 0 10px 0;">3) On</p>
+                <input type="text" class="text-input" placeholder="write about Tuesday">
+
+                <p style="margin: 20px 0 10px 0;">4)</p>
+                <input type="text" class="text-input" placeholder="write about Wednesday">
+            </div>
         </div>
 
-        {/* Exercise 2 */}
-        <div className="mb-8 p-4 bg-green-50 rounded-lg">
-          <h2 className="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
-            <span className="bg-green-600 text-white w-8 h-8 rounded flex items-center justify-center">2</span>
-            Lucy's daily activities - Write about you
-          </h2>
-          
-          <div className="mb-4 p-3 bg-white rounded border-2 border-green-200">
-            <table className="w-full text-sm">
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Sunday</td>
-                  <td className="py-2">walk in the park</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Monday</td>
-                  <td className="py-2">do yoga</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 font-semibold">Tuesday</td>
-                  <td className="py-2">read English books</td>
-                </tr>
-                <tr>
-                  <td className="py-2 font-semibold">Wednesday</td>
-                  <td className="py-2">go swimming pool</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <p className="mb-2">1) On Sundays Lucy <span className="font-semibold">walks in the park</span>.</p>
-              <div className="flex items-center gap-2">
-                <span>I usually</span>
-                <input
-                  type="text"
-                  value={answers.sunday}
-                  onChange={(e) => handleInputChange('sunday', e.target.value)}
-                  className="flex-1 px-3 py-2 border-2 border-green-300 rounded focus:border-green-500 focus:outline-none"
-                  placeholder="write your Sunday activity"
-                />
-                <span>on Sundays.</span>
-              </div>
+        <!-- Exercise 3 -->
+        <div class="exercise exercise-3">
+            <div class="exercise-title">
+                <span class="exercise-number ex3-num">3</span>
+                <span>Fill in the missing words</span>
             </div>
-
-            <div>
-              <p className="mb-2">2) On Mondays</p>
-              <input
-                type="text"
-                value={answers.monday}
-                onChange={(e) => handleInputChange('monday', e.target.value)}
-                className="w-full px-3 py-2 border-2 border-green-300 rounded focus:border-green-500 focus:outline-none mb-2"
-                placeholder="write about Lucy's Monday"
-              />
-              <div className="flex items-center gap-2">
-                <span>I</span>
-                <input
-                  type="text"
-                  className="flex-1 px-3 py-2 border-2 border-green-300 rounded focus:border-green-500 focus:outline-none"
-                  placeholder="write your Monday activity"
-                />
-              </div>
+            
+            <div class="note-box">
+                <p style="margin-bottom: 15px;">
+                    Mum, we <strong>are</strong> going on a picnic 
+                    <input type="text" class="note-input" placeholder="in">
+                    the morning. We've
+                </p>
+                <p style="margin-bottom: 15px;">
+                    <input type="text" class="note-input" placeholder="got">
+                    2 cartons of juice, 5 
+                    <input type="text" class="note-input" placeholder="bottles">
+                    of water and some fruit.
+                </p>
+                <p style="margin-bottom: 15px;">
+                    We also need 
+                    <input type="text" class="note-input" placeholder="some">
+                    sandwiches, but we 
+                    <input type="text" class="note-input" placeholder="have">
+                    not got
+                </p>
+                <p style="margin-bottom: 15px;">bread, cheese and tomatoes.</p>
+                <p style="margin-bottom: 10px;">
+                    <input type="text" class="note-input" placeholder="Can">
+                    you buy some, please?
+                </p>
+                <p style="font-weight: bold;">Lucy</p>
             </div>
-
-            <div>
-              <p className="mb-2">3) On</p>
-              <input
-                type="text"
-                value={answers.tuesday}
-                onChange={(e) => handleInputChange('tuesday', e.target.value)}
-                className="w-full px-3 py-2 border-2 border-green-300 rounded focus:border-green-500 focus:outline-none"
-                placeholder="write about Tuesday"
-              />
-            </div>
-
-            <div>
-              <p className="mb-2">4)</p>
-              <input
-                type="text"
-                value={answers.wednesday}
-                onChange={(e) => handleInputChange('wednesday', e.target.value)}
-                className="w-full px-3 py-2 border-2 border-green-300 rounded focus:border-green-500 focus:outline-none"
-                placeholder="write about Wednesday"
-              />
-            </div>
-          </div>
         </div>
 
-        {/* Exercise 3 */}
-        <div className="mb-8 p-4 bg-purple-50 rounded-lg">
-          <h2 className="text-xl font-bold text-purple-700 mb-4 flex items-center gap-2">
-            <span className="bg-purple-600 text-white w-8 h-8 rounded flex items-center justify-center">3</span>
-            Fill in the missing words
-          </h2>
-          
-          <div className="p-4 bg-white rounded border-2 border-purple-200">
-            <p className="mb-3">
-              Mum, we <span className="font-semibold">are</span> going on a picnic{' '}
-              <input
-                type="text"
-                value={answers.note1}
-                onChange={(e) => handleInputChange('note1', e.target.value)}
-                className="w-20 px-2 py-1 border-b-2 border-purple-300 focus:border-purple-500 focus:outline-none"
-              />{' '}
-              the morning. We've
-            </p>
-            <p className="mb-3">
-              <input
-                type="text"
-                value={answers.note2}
-                onChange={(e) => handleInputChange('note2', e.target.value)}
-                className="w-20 px-2 py-1 border-b-2 border-purple-300 focus:border-purple-500 focus:outline-none"
-              />{' '}
-              2 cartons of juice, 5{' '}
-              <input
-                type="text"
-                value={answers.note3}
-                onChange={(e) => handleInputChange('note3', e.target.value)}
-                className="w-24 px-2 py-1 border-b-2 border-purple-300 focus:border-purple-500 focus:outline-none"
-              />{' '}
-              of water and some fruit.
-            </p>
-            <p className="mb-3">
-              We also need{' '}
-              <input
-                type="text"
-                value={answers.note4}
-                onChange={(e) => handleInputChange('note4', e.target.value)}
-                className="w-20 px-2 py-1 border-b-2 border-purple-300 focus:border-purple-500 focus:outline-none"
-              />{' '}
-              sandwiches, but we{' '}
-              <input
-                type="text"
-                value={answers.note5}
-                onChange={(e) => handleInputChange('note5', e.target.value)}
-                className="w-24 px-2 py-1 border-b-2 border-purple-300 focus:border-purple-500 focus:outline-none"
-              />{' '}
-              not got
-            </p>
-            <p className="mb-3">bread, cheese and tomatoes.</p>
-            <p>
-              <input
-                type="text"
-                className="w-24 px-2 py-1 border-b-2 border-purple-300 focus:border-purple-500 focus:outline-none"
-              />{' '}
-              you buy some, please?
-            </p>
-            <p className="mt-2 font-semibold">Lucy</p>
-          </div>
+        <!-- Exercise 4 -->
+        <div class="exercise exercise-4">
+            <div class="exercise-title">
+                <span class="exercise-number ex4-num">4</span>
+                <span>Write sentences using the words in the box</span>
+            </div>
+            
+            <div class="word-table">
+                <div class="word-grid">
+                    <div class="word-column">
+                        <p>Subject</p>
+                        <p>The children</p>
+                        <p>The boy</p>
+                    </div>
+                    <div class="word-column">
+                        <p>Verb</p>
+                        <p>to make</p>
+                        <p>to hang</p>
+                        <p>to give</p>
+                    </div>
+                    <div class="word-column">
+                        <p>Object</p>
+                        <p>decorations</p>
+                        <p>stockings</p>
+                        <p>flowers</p>
+                    </div>
+                    <div class="word-column">
+                        <p>Occasion</p>
+                        <p>New Year</p>
+                        <p>St Nicholas Day</p>
+                        <p>Mother's Day</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="picture-container">
+                <img src="img_1.jpg" alt="Exercise pictures">
+            </div>
+
+            <div class="answer-section">
+                <div class="answer-item">
+                    <p>1)</p>
+                    <input type="text" class="text-input" placeholder="Example: The children make decorations for New Year">
+                </div>
+                <div class="answer-item">
+                    <p>2)</p>
+                    <input type="text" class="text-input" placeholder="Write your sentence here">
+                </div>
+                <div class="answer-item">
+                    <p>3)</p>
+                    <input type="text" class="text-input" placeholder="Write your sentence here">
+                </div>
+            </div>
         </div>
 
-        {/* Exercise 4 */}
-        <div className="mb-6 p-4 bg-orange-50 rounded-lg">
-          <h2 className="text-xl font-bold text-orange-700 mb-4 flex items-center gap-2">
-            <span className="bg-orange-600 text-white w-8 h-8 rounded flex items-center justify-center">4</span>
-            Write sentences using the words in the box
-          </h2>
-          
-          <div className="mb-4 p-3 bg-white rounded border-2 border-orange-200">
-            <div className="grid grid-cols-4 gap-2 text-sm text-center">
-              <div>
-                <p className="font-semibold">Subject</p>
-                <p>The children</p>
-                <p>The boy</p>
-              </div>
-              <div>
-                <p className="font-semibold">Verb</p>
-                <p>to make</p>
-                <p>to hang</p>
-                <p>to give</p>
-              </div>
-              <div>
-                <p className="font-semibold">Object</p>
-                <p>decorations</p>
-                <p>stockings</p>
-                <p>flowers</p>
-              </div>
-              <div>
-                <p className="font-semibold">Occasion</p>
-                <p>New Year</p>
-                <p>St Nicholas Day</p>
-                <p>Mother's Day</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Pictures */}
-          <div className="mb-4">
-            <img 
-              src="img_1.jpg" 
-              alt="Exercise pictures" 
-              className="w-full rounded border-2 border-gray-300"
-            />
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <p className="mb-2 font-semibold">1)</p>
-              <input
-                type="text"
-                value={answers.pic1}
-                onChange={(e) => handleInputChange('pic1', e.target.value)}
-                className="w-full px-3 py-2 border-2 border-orange-300 rounded focus:border-orange-500 focus:outline-none"
-                placeholder="Example: The children make decorations for New Year"
-              />
-            </div>
-
-            <div>
-              <p className="mb-2 font-semibold">2)</p>
-              <input
-                type="text"
-                value={answers.pic2}
-                onChange={(e) => handleInputChange('pic2', e.target.value)}
-                className="w-full px-3 py-2 border-2 border-orange-300 rounded focus:border-orange-500 focus:outline-none"
-                placeholder="Write your sentence here"
-              />
-            </div>
-
-            <div>
-              <p className="mb-2 font-semibold">3)</p>
-              <input
-                type="text"
-                value={answers.pic3}
-                onChange={(e) => handleInputChange('pic3', e.target.value)}
-                className="w-full px-3 py-2 border-2 border-orange-300 rounded focus:border-orange-500 focus:outline-none"
-                placeholder="Write your sentence here"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Check Button */}
-        <div className="text-center">
-          <button
-            onClick={() => setShowResults(!showResults)}
-            className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-lg shadow-lg"
-          >
-            {showResults ? 'Hide Results' : 'Check Exercise 1'}
-          </button>
-        </div>
-      </div>
+        <button class="check-btn" onclick="checkAnswers()">Check Exercise 1</button>
     </div>
-  );
-};
 
-export default EnglishWorksheet;
+    <script>
+        let isChecked = false;
+
+        // Auto-focus next input
+        document.querySelectorAll('.letter-input').forEach((input, index, inputs) => {
+            input.addEventListener('input', function() {
+                this.value = this.value.toLowerCase();
+                if (this.value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        function checkAnswers() {
+            isChecked = !isChecked;
+            const btn = document.querySelector('.check-btn');
+            
+            if (isChecked) {
+                btn.textContent = 'Hide Results';
+                document.querySelectorAll('.letter-input').forEach(input => {
+                    const answer = input.dataset.answer;
+                    const value = input.value.toLowerCase();
+                    
+                    if (value === answer) {
+                        input.classList.add('correct');
+                        input.classList.remove('incorrect');
+                    } else if (value) {
+                        input.classList.add('incorrect');
+                        input.classList.remove('correct');
+                    }
+                });
+            } else {
+                btn.textContent = 'Check Exercise 1';
+                document.querySelectorAll('.letter-input').forEach(input => {
+                    input.classList.remove('correct', 'incorrect');
+                });
+            }
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to reset all answers?')) {
+                document.querySelectorAll('input[type="text"]').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+                isChecked = false;
+                document.querySelector('.check-btn').textContent = 'Check Exercise 1';
+            }
+        }
+    </script>
+</body>
+</html>
