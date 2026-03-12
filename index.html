@@ -250,6 +250,10 @@
             background: linear-gradient(45deg, #ea4335, #fbbc05);
         }
 
+        .class-link.drive-link {
+            background: linear-gradient(45deg, #0f9d58, #4285f4);
+        }
+
         .current-time {
             position: fixed;
             top: 20px;
@@ -329,7 +333,6 @@
         .day-card:nth-child(3) { animation-delay: 0.3s; }
         .day-card:nth-child(4) { animation-delay: 0.4s; }
         .day-card:nth-child(5) { animation-delay: 0.5s; }
-        .day-card:nth-child(6) { animation-delay: 0.6s; }
 
         @keyframes fadeInUp {
             from {
@@ -356,7 +359,7 @@
                     <button class="week-btn" id="evenBtn" onclick="setWeek('even')">✌️ Парний</button>
                 </div>
                 <div class="week-info" id="weekInfo">
-                    Тиждень <span id="weekNumber">4</span> • <span id="weekType">Парний</span>
+                    Тиждень <span id="weekNumber">1</span> • <span id="weekType">Непарний</span>
                 </div>
             </div>
         </div>
@@ -364,55 +367,188 @@
         <div class="schedule-grid" id="scheduleGrid"></div>
 
         <div class="footer">
-            <p>✨ Розклад для групи УП-211 • 1 семестр 2025/2026 ✨</p>
-            <p style="margin-top: 10px; font-size: 0.8rem;">Останнє оновлення: листопад 2025</p>
- </div>
+            <p>✨ Розклад для групи УП-211 • 2 семестр 2025/2026 ✨</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">Останнє оновлення: березень 2026</p>
+        </div>
     </div>
 
     <script>
         const teacherContacts = {
-            "викл. Ходовиченко": "https://t.me/MykolaHdv",
-            "Тесленко Павло Олександрович": "https://t.me/pavlo_teslenko",
-            "викл. Літвінов": "mailto:litvinov.v.f@op.edu.ua",
-            "викл. Івченко І.Ю.": "https://t.me/ivchira",
-            "викл. Цапенко Л. Ю.": "mailto:l.e.tsapenko@op.edu.ua",
-            "викл. Ковтун В.В.": "mailto:kovtun.v.v@op.edu.ua",
+            "доц. Івченко І.Ю.": "https://t.me/ivchira",
+            "д. Чередниченко В.А.": "mailto:v.a.cherednychenko@op.edu.ua",
+            "ств. Кондратьєв С.Б.": "",
+            "ас. Ковтун І.А.": "",
+            "ств. Ковтун В.В.": "mailto:kovtun.v.v@op.edu.ua",
+            "ств. Узун І.С.": "https://t.me/IlliaUzun",
             "доц. Журан О.А.": "https://t.me/elena_zhuran",
-            "ств. Узун": "https://t.me/IlliaUzun",
-            "доц. Чередниченко В.А.": "mailto:v.a.cherednychenko@op.edu.ua"
+            "пр. Бедрій Д.І.": "",
+            "пр. Устенко С.А.": ""
         };
 
+        // ======= РОЗКЛАД =======
+        // weeks: "both" | "odd" | "even"
+        // type: "lecture" | "lab" | "practice" | "none"
         const scheduleData = {
             monday: [
-                {time: "1. 8:00-9:35", type: "lecture", name: "Гнучкі технології розробки ІТ-проєктів", teacher: "викл. Ходовиченко", link: "https://bit.ly/hodovychenko_zoom", weeks: "both"},
-                {time: "2. 9:50-11:25", type: "lecture", name: "Методологія УП в ІТ", teacher: "Тесленко Павло Олександрович", link: "https://us02web.zoom.us/j/84048195235?pwd=YWh3Q0dsNWx6WWtLZXlNNjR5VUN2UT09", weeks: "both"}
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lecture",
+                    name: "Інтелектуальні технології data mining в управління ІТ-проєктами",
+                    teacher: "доц. Івченко І.Ю.",
+                    link: "https://meet.google.com/tbe-ytja-nqx",
+                    googleClass: "https://classroom.google.com/u/1/c/ODQ1MTUwNjQyNjE4",
+                    weeks: "both"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Стратегічний аналіз та основи інноваційного підприємництва",
+                    teacher: "д. Чередниченко В.А.",
+                    link: "https://meet.google.com/nno-kwfm-spk",
+                    googleClass: "https://classroom.google.com/c/ODQ1MDM0NTgyOTIx",
+                    weeks: "odd"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lab",
+                    name: "Стратегічний аналіз та основи інноваційного підприємництва",
+                    teacher: "д. Чередниченко В.А.",
+                    link: "https://meet.google.com/nno-kwfm-spk",
+                    googleClass: "https://classroom.google.com/c/ODQ1MDM0NTgyOTIx",
+                    weeks: "even"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "lecture",
+                    name: "Тестування ІТ продуктів",
+                    teacher: "ств. Кондратьєв С.Б.",
+                    link: "https://meet.google.com/jrf-dbjh-gab",
+                    weeks: "both"
+                }
             ],
             tuesday: [
-                {time: "2. 9:50-11:25", type: "lab", name: "Хмарні технології", teacher: "викл. Літвінов", link: "https://meet.google.com/uhy-bdqv-pkn", weeks: "odd"},
-                {time: "2. 9:50-11:25", type: "lecture", name: "Хмарні технології", teacher: "викл. Літвінов", link: "https://meet.google.com/uhy-bdqv-pkn", weeks: "even"},
-                {time: "3. 11:40-13:15", type: "lecture", name: "Управління ризиками ІТ проєктів", teacher: "викл. Івченко І.Ю.", link: "https://meet.google.com/wgh-uqyp-pyd", googleClass: "https://classroom.google.com/c/NzYwMjEyMjAxNTM0?cjc=gayjlz67", weeks: "both"},
-                {time: "4. 13:30-15:05", type: "lab", name: "Гнучкі технології розробки ІТ-проєктів", teacher: "викл. Ходовиченко", link: "https://bit.ly/hodovychenko_zoom", weeks: "odd"},
-                {time: "4. 13:30-15:05", type: "lab", name: "Управління ризиками ІТ проєктів", teacher: "викл. Івченко І.Ю.", link: "https://meet.google.com/wgh-uqyp-pyd", googleClass: "https://classroom.google.com/c/NzYwMjEyMjAxNTM0?cjc=gayjlz67", weeks: "even"}
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lab",
+                    name: "Управління якістю та вимогами в ІТ проєктах",
+                    teacher: "ас. Ковтун І.А.",
+                    link: "https://us02web.zoom.us/j/85182816616?pwd=fMzX9G02iG12DKk1xhqbxAbyt2ndms.1",
+                    googleClass: "https://classroom.google.com/c/ODQ3MDQxNzI2NDk0",
+                    weeks: "odd"
+                },
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lab",
+                    name: "Тестування ІТ продуктів",
+                    teacher: "ств. Кондратьєв С.Б.",
+                    link: "https://meet.google.com/jrf-dbjh-gab",
+                    weeks: "even"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Управління якістю та вимогами в ІТ проєктах",
+                    teacher: "ств. Ковтун В.В.",
+                    link: "https://us02web.zoom.us/j/85182816616?pwd=fMzX9G02iG12DKk1xhqbxAbyt2ndms.1",
+                    googleClass: "https://classroom.google.com/c/ODQ3MDQxNzI2NDk0",
+                    weeks: "both"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "lecture",
+                    name: "Системи штучного інтелекту в розробці ІТ продукту",
+                    teacher: "ств. Узун І.С.",
+                    link: "https://meet.google.com/rne-witg-dke",
+                    googleClass: "https://classroom.google.com/c/ODQ1MjQ5MDM1NDE3?cjc=r2cmseeb",
+                    drive: "https://drive.google.com/drive/folders/1EmcvKH3-87R8OiPTmfH-bbMiccsjw9GacPvJtm5oxegT9cHnivabhf4DBXVrkXfy1TjqykwM?usp=sharing",
+                    weeks: "both"
+                },
+                {
+                    time: "4. 13:30-15:05",
+                    type: "none",
+                    name: "—",
+                    teacher: "",
+                    link: "",
+                    weeks: "odd"
+                },
+                {
+                    time: "4. 13:30-15:05",
+                    type: "lab",
+                    name: "Інтелектуальні технології data mining в управління ІТ-проєктами",
+                    teacher: "доц. Івченко І.Ю. · пр. Устенко С.А.",
+                    link: "https://meet.google.com/tbe-ytja-nqx",
+                    weeks: "even"
+                }
             ],
             wednesday: [
-                {time: "1. 8:00-9:35", type: "practice", name: "Іноземна мова за проф. спрямуванням", teacher: "викл. Цапенко Л. Ю.", link: "https://meet.google.com/hok-khmm-hhu", googleClass: "https://classroom.google.com/c/ODA3NjYwNDEzNjky", weeks: "both"}
+                {
+                    time: "1. 8:00-9:35",
+                    type: "none",
+                    name: "—",
+                    teacher: "",
+                    link: "",
+                    weeks: "odd"
+                },
+                {
+                    time: "1. 8:00-9:35",
+                    type: "lab",
+                    name: "Планування та контроль виконання в ІТ-проєктах",
+                    teacher: "доц. Журан О.А.",
+                    link: "https://meet.google.com/jui-akiu-bti",
+                    googleClass: "https://classroom.google.com/c/ODQ1NDkzNTI2MTEx",
+                    weeks: "even"
+                },
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Планування та контроль виконання в ІТ-проєктах",
+                    teacher: "доц. Журан О.А.",
+                    link: "https://meet.google.com/jui-akiu-bti",
+                    googleClass: "https://classroom.google.com/c/ODQ1NDkzNTI2MTEx",
+                    weeks: "both"
+                }
             ],
             thursday: [
-                {time: "1. 8:00-9:35", type: "lab", name: "Інжиніринг даних", teacher: "викл. Ковтун В.В.", link: "https://us02web.zoom.us/j/88696773669?pwd=1x8TMJN4rdn7xRC8G0a2LKfPc5Jw9P.1", googleClass: "https://classroom.google.com/c/ODA4OTI0MDY5OTg3", weeks: "odd"},
-                {time: "1. 8:00-9:35", type: "lecture", name: "Інжиніринг даних", teacher: "викл. Ковтун В.В.", link: "https://us02web.zoom.us/j/88696773669?pwd=1x8TMJN4rdn7xRC8G0a2LKfPc5Jw9P.1", googleClass: "https://classroom.google.com/c/ODA4OTI0MDY5OTg3", weeks: "even"},
-                {time: "2. 9:50-11:25", type: "lecture", name: "Методологія УП в ІТ", teacher: "доц. Журан О.А.", link: "https://meet.google.com/wfr-eauz-ewx", googleClass: "https://classroom.google.com/c/NzgwNjE3OTgxMDA3", weeks: "both"}
+                {
+                    time: "2. 9:50-11:25",
+                    type: "lecture",
+                    name: "Управління командою ІТ проєктів",
+                    teacher: "пр. Бедрій Д.І.",
+                    link: "https://us02web.zoom.us/j/85978736109?pwd=6c2GEdfIaYljMbRjVA5IYkMPUepVZC.1",
+                    weeks: "both"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "lab",
+                    name: "Управління командою ІТ проєктів",
+                    teacher: "пр. Бедрій Д.І.",
+                    link: "https://us02web.zoom.us/j/85978736109?pwd=6c2GEdfIaYljMbRjVA5IYkMPUepVZC.1",
+                    weeks: "odd"
+                },
+                {
+                    time: "3. 11:40-13:15",
+                    type: "lab",
+                    name: "Системи штучного інтелекту в розробці ІТ продукту",
+                    teacher: "ств. Узун І.С.",
+                    link: "https://meet.google.com/rne-witg-dke",
+                    googleClass: "https://classroom.google.com/c/ODQ1MjQ5MDM1NDE3?cjc=r2cmseeb",
+                    drive: "https://drive.google.com/drive/folders/1EmcvKH3-87R8OiPTmfH-bbMiccsjw9GacPvJtm5oxegT9cHnivabhf4DBXVrkXfy1TjqykwM?usp=sharing",
+                    weeks: "even"
+                }
             ],
             friday: [
-                {time: "2. 9:50-11:25", type: "lab", name: "Високорівневе програмування", teacher: "ств. Узун", link: "https://meet.google.com/hmt-fpdf-qci", weeks: "odd"},
-                {time: "2. 9:50-11:25", type: "lecture", name: "Високорівневе програмування", teacher: "ств. Узун", link: "https://meet.google.com/hmt-fpdf-qci", weeks: "even"},
-                {time: "3. 11:40-13:15", type: "none", name: "—", teacher: "", link: "", weeks: "odd"},
-                {time: "3. 11:40-13:15", type: "lecture", name: "Наукові дослідження та винах. діяльність в ІТ галузі", teacher: "доц. Чередниченко В.А.", link: "https://meet.google.com/rrm-gffj-mko", googleClass: "https://classroom.google.com/u/0/c/ODE0Mjg5NTIxMDk0", weeks: "even"},
-                {time: "4. 13:30-15:05", type: "none", name: "—", teacher: "", link: "", weeks: "odd"},
-                {time: "4. 13:30-15:05", type: "lab", name: "Наукові дослідження та винах. діяльність в ІТ", teacher: "доц. Чередниченко В.А.", link: "https://meet.google.com/rrm-gffj-mko", googleClass: "https://classroom.google.com/u/0/c/ODE0Mjg5NTIxMDk0", weeks: "even"}
+                {
+                    time: "1. 8:00-9:35",
+                    type: "none",
+                    name: "День курсового проектування 🐹",
+                    teacher: "",
+                    link: "",
+                    weeks: "both"
+                }
             ]
         };
 
-        let currentWeek = 1, currentWeekType = 'even', isAutoMode = true;
+        let currentWeek = 1, currentWeekType = 'odd', isAutoMode = true;
 
         function openTeacherContact(teacher) {
             const contact = teacherContacts[teacher];
@@ -420,12 +556,16 @@
         }
 
         function calculateCurrentWeek() {
-            const sept1 = new Date('2025-09-01'), sept1Day = sept1.getDay();
+            const sept1 = new Date('2025-09-01');
+            const sept1Day = sept1.getDay();
             const firstMonday = new Date(sept1);
-            firstMonday.setDate(sept1.getDate() - sept1Day + 1);
-            const now = new Date(), currentMonday = new Date(now), currentDay = now.getDay();
-            currentMonday.setDate(now.getDate() - currentDay + 1);
-            const timeDiff = currentMonday - firstMonday, weeksPassed = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000));
+            firstMonday.setDate(sept1.getDate() - (sept1Day === 0 ? 6 : sept1Day - 1));
+            const now = new Date();
+            const currentMonday = new Date(now);
+            const currentDay = now.getDay();
+            currentMonday.setDate(now.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
+            const timeDiff = currentMonday - firstMonday;
+            const weeksPassed = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000));
             currentWeek = 1 + weeksPassed;
             currentWeekType = currentWeek % 2 === 1 ? 'odd' : 'even';
         }
@@ -451,19 +591,20 @@
         function updateWeekInfo() {
             document.getElementById('weekNumber').textContent = currentWeek;
             const weekTypeText = currentWeekType === 'odd' ? 'Непарний' : 'Парний';
-            document.getElementById('weekType').innerHTML = isAutoMode ? 
-                `${weekTypeText} <span style="color: #27ae60; font-size: 0.8em;">(авто)</span>` : weekTypeText;
+            document.getElementById('weekType').innerHTML = isAutoMode
+                ? `${weekTypeText} <span style="color: #27ae60; font-size: 0.8em;">(авто)</span>`
+                : weekTypeText;
         }
 
         function renderSchedule() {
             const days = [
-                {key: 'monday', name: '📕 Понеділок', emoji: '🌟'},
-                {key: 'tuesday', name: '📗 Вівторок', emoji: '🔥'},
-                {key: 'wednesday', name: '📘 Середа', emoji: '⚡'},
-                {key: 'thursday', name: '📙 Четвер', emoji: '💻'},
-                {key: 'friday', name: '📒 П\'ятниця', emoji: '🐹'},
-                {key: 'saturday', name: '📓 Субота', emoji: '🔄'}
+                {key: 'monday',    name: '📕 Понеділок', emoji: '🌟'},
+                {key: 'tuesday',   name: '📗 Вівторок',  emoji: '🔥'},
+                {key: 'wednesday', name: '📘 Середа',    emoji: '⚡'},
+                {key: 'thursday',  name: '📙 Четвер',    emoji: '💻'},
+                {key: 'friday',    name: '📒 П\'ятниця', emoji: '🐹'}
             ];
+
             const scheduleGrid = document.getElementById('scheduleGrid');
             scheduleGrid.innerHTML = '';
 
@@ -471,57 +612,72 @@
                 const dayCard = document.createElement('div');
                 dayCard.className = 'day-card';
                 let dayHTML = `<h2 class="day-title">${day.emoji} ${day.name.split(' ')[1]}</h2>`;
-                
-                if (day.key === 'saturday') {
 
-                    const currentWeekType = currentWeek % 2 === 1 ? 'odd' : 'even';
-                    const workdayIndex = (currentWeek - 4) % 5;
-                    const workdayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-                    const workdayNames = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця'];
-                    dayHTML += `<div style="text-align: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(135deg, #f39c1210, #f39c1205); border-radius: 10px; border-left: 4px solid #f39c12;"><strong>Відпрацювання: ${workdayNames[workdayIndex]} (${makeupWeekType === 'odd' ? 'непарний' : 'парний'} тиждень)</strong></div>`;
-                    const dayClasses = scheduleData[workdayKeys[workdayIndex]] || [];
-                    const relevantClasses = dayClasses.filter(cls => cls.weeks === 'both' || cls.weeks === makeupWeekType);
+                const dayClasses = scheduleData[day.key] || [];
+                const relevantClasses = dayClasses.filter(cls => cls.weeks === 'both' || cls.weeks === currentWeekType);
 
-                    for (let slot = 1; slot <= 4; slot++) {
-                        const slotClass = relevantClasses.find(cls => cls.time.startsWith(`${slot}.`));
-                        if (slotClass) {
-                            const typeClass = slotClass.type === 'none' ? 'no-class' : slotClass.type;
-                            const typeLabel = slotClass.type === 'lab' ? 'Лабораторна' : slotClass.type === 'lecture' ? 'Лекція' : slotClass.type === 'practice' ? 'Практика' : 'Вільно';
+                const timeSlots = ['8:00-9:35', '9:50-11:25', '11:40-13:15', '13:30-15:05'];
 
-                            dayHTML += `<div class="class-item ${typeClass}"><div class="class-time">${slotClass.time}</div><span class="class-type type-${slotClass.type === 'none' ? 'none' : slotClass.type}">${typeLabel}</span><span class="week-indicator ${makeupWeekType}-week">🔄 Відпр. ${makeupWeekType === 'odd' ? '☝️' : '✌️'}</span><div class="class-name">${slotClass.name}</div>${slotClass.teacher ? `<div class="class-teacher" onclick="openTeacherContact('${slotClass.teacher}')" title="Написати викладачу">${slotClass.teacher}</div>` : ''}<div class="class-links">${slotClass.link ? `<a href="${slotClass.link}" class="class-link meet-link" target="_blank">📹 Посилання</a>` : ''}${slotClass.googleClass ? `<a href="${slotClass.googleClass}" class="class-link google-class" target="_blank">📚 Classroom</a>` : ''}</div></div>`;
-
-                        } else {
-                            const timeSlots = ['8:00-9:35', '9:50-11:25', '11:40-13:15', '13:30-15:05'];
-                            dayHTML += `<div class="class-item no-class"><div class="class-time">${slot}. ${timeSlots[slot-1]}</div><span class="class-type type-none">Вільно</span><div class="class-name">—</div></div>`;
-                        }
+                // For friday just show all relevant without slot-filling
+                if (day.key === 'friday') {
+                    if (relevantClasses.length === 0) {
+                        dayHTML += `<div class="class-item no-class"><span class="class-type type-none">Вільно</span><div class="class-name">—</div></div>`;
+                    } else {
+                        relevantClasses.forEach(cls => {
+                            dayHTML += buildClassHTML(cls);
+                        });
                     }
                 } else {
-                    const dayClasses = scheduleData[day.key] || [];
-                    const relevantClasses = dayClasses.filter(cls => cls.weeks === 'both' || cls.weeks === currentWeekType);
                     for (let slot = 1; slot <= 4; slot++) {
                         const slotClass = relevantClasses.find(cls => cls.time.startsWith(`${slot}.`));
                         if (slotClass) {
-                            const typeClass = slotClass.type === 'none' ? 'no-class' : slotClass.type;
-                            const typeLabel = slotClass.type === 'lab' ? 'Лабораторна' : slotClass.type === 'lecture' ? 'Лекція' : slotClass.type === 'practice' ? 'Практика' : 'Вільно';
-                            dayHTML += `<div class="class-item ${typeClass}"><div class="class-time">${slotClass.time}</div><span class="class-type type-${slotClass.type === 'none' ? 'none' : slotClass.type}">${typeLabel}</span>${slotClass.weeks !== 'both' ? `<span class="week-indicator ${slotClass.weeks === 'odd' ? 'odd' : 'even'}-week">${slotClass.weeks === 'odd' ? '☝️' : '✌️'}</span>` : ''}<div class="class-name">${slotClass.name}</div>${slotClass.teacher ? `<div class="class-teacher" onclick="openTeacherContact('${slotClass.teacher}')" title="Написати викладачу">${slotClass.teacher}</div>` : ''}<div class="class-links">${slotClass.link ? `<a href="${slotClass.link}" class="class-link meet-link" target="_blank">📹 Посилання</a>` : ''}${slotClass.googleClass ? `<a href="${slotClass.googleClass}" class="class-link google-class" target="_blank">📚 Classroom</a>` : ''}</div></div>`;
+                            dayHTML += buildClassHTML(slotClass);
                         } else {
-                            const timeSlots = ['8:00-9:35', '9:50-11:25', '11:40-13:15', '13:30-15:05'];
                             dayHTML += `<div class="class-item no-class"><div class="class-time">${slot}. ${timeSlots[slot-1]}</div><span class="class-type type-none">Вільно</span><div class="class-name">—</div></div>`;
                         }
                     }
                 }
+
                 dayCard.innerHTML = dayHTML;
                 scheduleGrid.appendChild(dayCard);
             });
+
+            highlightCurrentDay();
+        }
+
+        function buildClassHTML(cls) {
+            const typeClass = cls.type === 'none' ? 'no-class' : cls.type;
+            const typeLabel = {lecture: 'Лекція', lab: 'Лабораторна', practice: 'Практика', none: 'Вільно'}[cls.type] || 'Вільно';
+            const weekBadge = cls.weeks !== 'both'
+                ? `<span class="week-indicator ${cls.weeks}-week">${cls.weeks === 'odd' ? '☝️ Непарна' : '✌️ Парна'}</span>`
+                : '';
+
+            let links = '';
+            if (cls.link)        links += `<a href="${cls.link}" class="class-link meet-link" target="_blank">📹 Посилання</a>`;
+            if (cls.googleClass) links += `<a href="${cls.googleClass}" class="class-link google-class" target="_blank">📚 Classroom</a>`;
+            if (cls.drive)       links += `<a href="${cls.drive}" class="class-link drive-link" target="_blank">💿 Drive</a>`;
+
+            return `
+                <div class="class-item ${typeClass}">
+                    <div class="class-time">${cls.time}</div>
+                    <span class="class-type type-${cls.type === 'none' ? 'none' : cls.type}">${typeLabel}</span>
+                    ${weekBadge}
+                    <div class="class-name">${cls.name}</div>
+                    ${cls.teacher ? `<div class="class-teacher" onclick="openTeacherContact('${cls.teacher}')" title="Написати викладачу">${cls.teacher}</div>` : ''}
+                    ${links ? `<div class="class-links">${links}</div>` : ''}
+                </div>`;
         }
 
         function updateTime() {
             const now = new Date();
-            document.getElementById('currentTime').textContent = now.toLocaleDateString('uk-UA', {weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev'});
+            document.getElementById('currentTime').textContent = now.toLocaleDateString('uk-UA', {
+                weekday: 'short', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kiev'
+            });
             if (isAutoMode) {
-                const oldWeek = currentWeek, oldWeekType = currentWeekType;
+                const oldWeek = currentWeek, oldType = currentWeekType;
                 calculateCurrentWeek();
-                if (oldWeek !== currentWeek || oldWeekType !== currentWeekType) {
+                if (oldWeek !== currentWeek || oldType !== currentWeekType) {
                     updateWeekInfo();
                     renderSchedule();
                 }
@@ -529,13 +685,12 @@
         }
 
         function highlightCurrentDay() {
-            const today = new Date().getDay();
+            const today = new Date().getDay(); // 1=Mon … 5=Fri
             const dayCards = document.querySelectorAll('.day-card');
-            if (today >= 1 && today <= 6) {
-                const cardIndex = today === 6 ? 5 : today - 1;
+            if (today >= 1 && today <= 5) {
                 setTimeout(() => {
-                    dayCards[cardIndex].style.border = '5px solid #667eea';
-                    dayCards[cardIndex].style.boxShadow = '0 20px 40px rgba(102, 126, 234, 0.3)';
+                    dayCards[today - 1].style.border = '5px solid #667eea';
+                    dayCards[today - 1].style.boxShadow = '0 20px 40px rgba(102, 126, 234, 0.3)';
                 }, 500);
             }
         }
@@ -545,11 +700,9 @@
             setWeek('auto');
             updateTime();
             setInterval(updateTime, 60000);
-            highlightCurrentDay();
         }
 
         init();
     </script>
 </body>
-
 </html>
